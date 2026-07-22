@@ -50,41 +50,47 @@ async def generate_overview(s: Stats) -> None:
 
 async def generate_languages(s: Stats) -> None:
     """
-    Generate an SVG badge with summary languages used
+    Generate an SVG badge with summary languages used, rendered as a pie
+    chart (CSS conic-gradient) with a language list beside it.
     :param s: Represents user's GitHub statistics
     """
     with open("templates/languages.svg", "r") as f:
         output = f.read()
 
-    progress = ""
     lang_list = ""
+    gradient_stops = ""
     sorted_languages = sorted((await s.languages).items(), reverse=True,
                               key=lambda t: t[1].get("size"))
     delay_between = 150
+    cumulative = 0.0
+    total = len(sorted_languages)
     for i, (lang, data) in enumerate(sorted_languages):
         color = data.get("color")
         color = color if color is not None else "#000000"
-        ratio = [.98, .02]
-        if data.get("prop", 0) > 50:
-            ratio = [.99, .01]
-        if i == len(sorted_languages) - 1:
-            ratio = [1, 0]
-        progress += (f'<span style="background-color: {color};'
-                     f'width: {(ratio[0] * data.get("prop", 0)):0.3f}%;'
-                     f'margin-right: {(ratio[1] * data.get("prop", 0)):0.3f}%;" '
-                     f'class="progress-item"></span>')
+        prop = data.get("prop", 0)
+
+        start = cumulative
+        cumulative += prop
+        # Force the final slice to reach exactly 100% so floating point
+        # rounding across many additions doesn't leave a visible gap.
+        end = 100 if i == total - 1 else cumulative
+
+        gradient_stops += f"{color} {start:0.3f}% {end:0.3f}%, "
+
         lang_list += f"""
 <li style="animation-delay: {i * delay_between}ms;">
 <svg xmlns="http://www.w3.org/2000/svg" class="octicon" style="fill:{color};"
 viewBox="0 0 16 16" version="1.1" width="16" height="16"><path
 fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8z"></path></svg>
 <span class="lang">{lang}</span>
-<span class="percent">{data.get("prop", 0):0.2f}%</span>
+<span class="percent">{prop:0.2f}%</span>
 </li>
 
 """
 
-    output = re.sub(r"{{ progress }}", progress, output)
+    gradient_stops = gradient_stops.rstrip(", ")
+
+    output = re.sub(r"{{ conic_gradient }}", gradient_stops, output)
     output = re.sub(r"{{ lang_list }}", lang_list, output)
 
     generate_output_folder()
