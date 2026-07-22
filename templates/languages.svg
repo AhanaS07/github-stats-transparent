@@ -10,7 +10,7 @@ svg {
   width: calc(100% - 10px);
   height: calc(100% - 10px);
   fill: #00000000;
-  stroke: #8B8B8B22;
+  stroke: #9745F533;
   stroke-width: 1px;
   rx: 6px;
   ry: 6px;
@@ -27,8 +27,26 @@ h2 {
   line-height: 24px;
   font-size: 16px;
   font-weight: 600;
-  color: rgb(72, 148, 224);
-  fill: rgb(72, 148, 224);
+  color: #9745f5;
+  fill: #9745f5;
+}
+
+.pie-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.pie {
+  width: 108px;
+  height: 108px;
+  min-width: 108px;
+  border-radius: 50%;
+  margin-right: 22px;
+  /* Uncomment the two lines below for a donut instead of a solid pie.
+     Using a CSS mask keeps the hole truly transparent in both light
+     and dark mode, instead of punching a solid-colored circle. */
+  -webkit-mask: radial-gradient(circle, transparent 55%, black 56%); 
+  mask: radial-gradient(circle, transparent 55%, black 56%); 
 }
 
 ul {
@@ -39,11 +57,11 @@ ul {
 }
 
 li {
-  display: inline-flex;
-  font-size: 12px;
-  margin-right: 2ch;
+  display: flex;
   align-items: center;
-  flex-wrap: nowrap;
+  font-size: 12px;
+  margin-bottom: 5px;
+  white-space: nowrap;
   transform: translateX(-500%);
   animation-duration: 1s;
   animation-name: slideIn;
@@ -64,29 +82,19 @@ div.ellipsis {
 }
 
 .octicon {
-  fill: rgb(248, 96, 105);
+  fill: #9f4bff;
   margin-right: 0.5ch;
   vertical-align: top;
-}
-
-.progress {
-  display: flex;
-  height: 8px;
-  overflow: hidden;
-  background-color: #00000000;
-  border-radius: 6px;
-  outline: 1px solid transparent;
-  margin-bottom: 1em;
 }
 
 .lang {
   font-weight: 600;
   margin-right: 4px;
-  color: rgb(135, 135, 135);
+  color: #a78bfa;
 }
 
 .percent {
-  color: rgb(150,150,150)
+  color: #8f6fc9;
 }
 </style>
 <g>
@@ -97,17 +105,15 @@ div.ellipsis {
 
 <h2>Most Used Languages</h2>
 
-<div>
-<span class="progress">
-{{ progress }}
-</span>
-</div>
+<div class="pie-wrapper">
+<div class="pie" style="background: conic-gradient({{ conic_gradient }});"></div>
 
 <ul>
 
 {{ lang_list }}
 
 </ul>
+</div>
 
 </div>
 </foreignObject>
