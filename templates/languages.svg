@@ -37,16 +37,16 @@ h2 {
 }
 
 .pie {
-  width: 108px;
-  height: 108px;
-  min-width: 108px;
+  width: 92px;
+  height: 92px;
+  min-width: 92px;
   border-radius: 50%;
-  margin-right: 22px;
-  /* Uncomment the two lines below for a donut instead of a solid pie.
-     Using a CSS mask keeps the hole truly transparent in both light
-     and dark mode, instead of punching a solid-colored circle. */
-  -webkit-mask: radial-gradient(circle, transparent 55%, black 56%); 
-  mask: radial-gradient(circle, transparent 55%, black 56%); 
+  margin-right: 18px;
+  /* Donut hole via CSS mask. Must use "white" (not "black") for the
+     visible ring: mask uses luminance by default, and black has zero
+     luminance, so a black ring would mask itself away too. */
+  -webkit-mask: radial-gradient(circle, transparent 55%, white 56%);
+  mask: radial-gradient(circle, transparent 55%, white 56%);
 }
 
 ul {
@@ -54,14 +54,19 @@ ul {
   padding-left: 0;
   margin-top: 0;
   margin-bottom: 0;
+  columns: 3;
+  column-gap: 8px;
 }
 
 li {
   display: flex;
   align-items: center;
-  font-size: 12px;
-  margin-bottom: 5px;
+  font-size: 10.5px;
+  margin-bottom: 4px;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  break-inside: avoid;
   transform: translateX(-500%);
   animation-duration: 1s;
   animation-name: slideIn;
